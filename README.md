@@ -107,7 +107,7 @@ This produces:
 ## Notes
 
 - The style at `data/styles/route-planner/style.json` expects:
-  - PMTiles source at `http://localhost:8081/planet.json`
+  - PMTiles source at `http://<tile-host>:8081/planet.json`
   - Global fallback raster terrain at `data/mbtiles/terrain_global_250m.mbtiles`
   - Global fallback vector contours at `data/mbtiles/contours_global_250m.mbtiles`
   - High-resolution California + UK raster terrain at `data/mbtiles/terrain_ca_uk_hi.mbtiles`
@@ -117,6 +117,20 @@ This produces:
 - Use one style URL with no switching. High-resolution CA/UK layers draw where tiles exist; global fallback fills everywhere else.
 - If contour layer names are not `contour`, edit `source-layer` for `contours_global` and `contours_ca_uk_hi` in `data/styles/route-planner/style.json`.
 - `ca_hi.mbtiles` is expected to use OpenMapTiles-style layers (`transportation`, `building`, `place`).
+
+For remote clients (Overseer on another machine):
+- `:8080` paths in style are host-agnostic (relative URLs).
+- Set PMTiles basemap host with:
+
+```bash
+./scripts/set_style_remote_host.sh <tile_host_or_ip>
+```
+
+Then restart:
+
+```bash
+docker compose up -d --force-recreate
+```
 
 ## Runtime Data Cleanup and Portability
 
