@@ -1,0 +1,9 @@
+.env
+.DS_Store
+data/mbtiles/*.mbtiles
+data/pmtiles/*.pmtiles
+logs/
+tmp/
+dist/
+data/.DS_Store
+copernicus-dem-90m/

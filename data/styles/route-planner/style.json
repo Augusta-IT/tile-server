@@ -1,0 +1,928 @@
+{
+  "version": 8,
+  "name": "Route Planner",
+  "glyphs": "http://localhost:8080/fonts/{fontstack}/{range}.pbf",
+  "sources": {
+    "basemap": {
+      "type": "vector",
+      "url": "http://localhost:8081/planet.json",
+      "minzoom": 0,
+      "maxzoom": 15
+    },
+    "terrain_global": {
+      "type": "raster",
+      "url": "http://localhost:8080/data/terrain_global_250m.json",
+      "tileSize": 256
+    },
+    "terrain_ca_uk_hi": {
+      "type": "raster",
+      "url": "http://localhost:8080/data/terrain_ca_uk_hi.json",
+      "tileSize": 256
+    },
+    "slope_ca_uk_hi": {
+      "type": "raster",
+      "url": "http://localhost:8080/data/slope_ca_uk_hi.json",
+      "tileSize": 256
+    },
+    "contours_global": {
+      "type": "vector",
+      "url": "http://localhost:8080/data/contours_global_250m.json",
+      "minzoom": 6,
+      "maxzoom": 15
+    },
+    "contours_ca_uk_hi": {
+      "type": "vector",
+      "url": "http://localhost:8080/data/contours_ca_uk_hi.json",
+      "minzoom": 6,
+      "maxzoom": 15
+    },
+    "ca_hi": {
+      "type": "vector",
+      "url": "http://localhost:8080/data/ca_hi.json",
+      "minzoom": 0,
+      "maxzoom": 15
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#f2efe6"
+      }
+    },
+    {
+      "id": "terrain-global-raster",
+      "type": "raster",
+      "source": "terrain_global",
+      "paint": {
+        "raster-opacity": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          5,
+          0.78,
+          10,
+          0.74,
+          15,
+          0.68
+        ],
+        "raster-contrast": 0.36,
+        "raster-saturation": 0.02,
+        "raster-brightness-min": 0.12,
+        "raster-brightness-max": 0.95
+      }
+    },
+    {
+      "id": "terrain-ca-uk-hi-raster",
+      "type": "raster",
+      "source": "terrain_ca_uk_hi",
+      "paint": {
+        "raster-opacity": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          8,
+          0.98,
+          12,
+          0.95,
+          15,
+          0.9
+        ],
+        "raster-contrast": 0.42,
+        "raster-saturation": 0.08,
+        "raster-brightness-min": 0.1,
+        "raster-brightness-max": 0.96
+      }
+    },
+    {
+      "id": "slope-ca-uk-hi-raster",
+      "type": "raster",
+      "source": "slope_ca_uk_hi",
+      "minzoom": 9,
+      "paint": {
+        "raster-opacity": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          9,
+          0.7,
+          12,
+          0.62,
+          15,
+          0.5
+        ],
+        "raster-contrast": 0.32,
+        "raster-saturation": 0.65
+      }
+    },
+    {
+      "id": "earth",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "earth",
+      "paint": {
+        "fill-color": "#f3e7c8",
+        "fill-opacity": 0.14
+      }
+    },
+    {
+      "id": "landcover",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "landcover",
+      "paint": {
+        "fill-color": "#d8e3b8",
+        "fill-opacity": 0.22
+      }
+    },
+    {
+      "id": "landuse-basemap",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "landuse",
+      "minzoom": 6,
+      "maxzoom": 15,
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "military",
+            "protected_area",
+            "nature_reserve",
+            "national_park"
+          ],
+          "#9fcd87",
+          "#b8d7a8"
+        ],
+        "fill-opacity": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          6,
+          0.16,
+          12,
+          0.24,
+          15,
+          0.3
+        ]
+      }
+    },
+    {
+      "id": "landuse-ca-hi",
+      "type": "fill",
+      "source": "ca_hi",
+      "source-layer": "landuse",
+      "minzoom": 10,
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "class"
+          ],
+          [
+            "military",
+            "protected_area",
+            "nature_reserve",
+            "national_park"
+          ],
+          "#95c977",
+          "#b8d7a8"
+        ],
+        "fill-opacity": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          0.18,
+          12,
+          0.28,
+          15,
+          0.35
+        ]
+      }
+    },
+    {
+      "id": "landuse-outline-ca-hi",
+      "type": "line",
+      "source": "ca_hi",
+      "source-layer": "landuse",
+      "minzoom": 10,
+      "filter": [
+        "in",
+        [
+          "get",
+          "class"
+        ],
+        [
+          "literal",
+          [
+            "military",
+            "protected_area",
+            "nature_reserve",
+            "national_park"
+          ]
+        ]
+      ],
+      "paint": {
+        "line-color": "#5f8f4d",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          0.6,
+          12,
+          1.1,
+          15,
+          1.8
+        ],
+        "line-opacity": 0.78
+      }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "basemap",
+      "source-layer": "water",
+      "paint": {
+        "fill-color": "#6ea7cc",
+        "fill-opacity": 0.95
+      }
+    },
+    {
+      "id": "contour-global-minor",
+      "type": "line",
+      "source": "contours_global",
+      "source-layer": "contour",
+      "minzoom": 7,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "has",
+          "ele"
+        ],
+        [
+          "!=",
+          [
+            "%",
+            [
+              "get",
+              "ele"
+            ],
+            100
+          ],
+          0
+        ]
+      ],
+      "paint": {
+        "line-color": "#85776a",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          7,
+          0.45,
+          12,
+          1.15,
+          15,
+          1.35
+        ],
+        "line-opacity": 0.62
+      }
+    },
+    {
+      "id": "contour-global-major",
+      "type": "line",
+      "source": "contours_global",
+      "source-layer": "contour",
+      "minzoom": 7,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "has",
+          "ele"
+        ],
+        [
+          "==",
+          [
+            "%",
+            [
+              "get",
+              "ele"
+            ],
+            100
+          ],
+          0
+        ]
+      ],
+      "paint": {
+        "line-color": "#5a4d41",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          7,
+          0.75,
+          12,
+          1.8,
+          15,
+          2.15
+        ],
+        "line-opacity": 0.82
+      }
+    },
+    {
+      "id": "contour-ca-uk-hi-minor",
+      "type": "line",
+      "source": "contours_ca_uk_hi",
+      "source-layer": "contour",
+      "minzoom": 8,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "has",
+          "ele"
+        ],
+        [
+          "!=",
+          [
+            "%",
+            [
+              "get",
+              "ele"
+            ],
+            100
+          ],
+          0
+        ]
+      ],
+      "paint": {
+        "line-color": "#685948",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          8,
+          0.72,
+          12,
+          1.55,
+          15,
+          1.9
+        ],
+        "line-opacity": 0.82
+      }
+    },
+    {
+      "id": "contour-ca-uk-hi-major",
+      "type": "line",
+      "source": "contours_ca_uk_hi",
+      "source-layer": "contour",
+      "minzoom": 8,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "has",
+          "ele"
+        ],
+        [
+          "==",
+          [
+            "%",
+            [
+              "get",
+              "ele"
+            ],
+            100
+          ],
+          0
+        ]
+      ],
+      "paint": {
+        "line-color": "#3f3428",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          8,
+          1.05,
+          12,
+          2.35,
+          15,
+          2.8
+        ],
+        "line-opacity": 0.96
+      }
+    },
+    {
+      "id": "contour-ca-uk-hi-index",
+      "type": "line",
+      "source": "contours_ca_uk_hi",
+      "source-layer": "contour",
+      "minzoom": 9,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "has",
+          "ele"
+        ],
+        [
+          "==",
+          [
+            "%",
+            [
+              "to-number",
+              [
+                "get",
+                "ele"
+              ]
+            ],
+            500
+          ],
+          0
+        ]
+      ],
+      "paint": {
+        "line-color": "#2f261d",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          9,
+          1.1,
+          12,
+          2.1,
+          15,
+          2.8
+        ],
+        "line-opacity": 1
+      }
+    },
+    {
+      "id": "contour-ca-uk-hi-label",
+      "type": "symbol",
+      "source": "contours_ca_uk_hi",
+      "source-layer": "contour",
+      "minzoom": 11,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "has",
+          "ele"
+        ],
+        [
+          "==",
+          [
+            "%",
+            [
+              "to-number",
+              [
+                "get",
+                "ele"
+              ]
+            ],
+            200
+          ],
+          0
+        ]
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "text-field": [
+          "concat",
+          [
+            "to-string",
+            [
+              "to-number",
+              [
+                "get",
+                "ele"
+              ]
+            ]
+          ],
+          " m"
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          11,
+          9,
+          15,
+          11
+        ],
+        "symbol-spacing": 350
+      },
+      "paint": {
+        "text-color": "#2a2018",
+        "text-halo-color": "#fffdf8",
+        "text-halo-width": 1.4
+      }
+    },
+    {
+      "id": "roads-casing",
+      "type": "line",
+      "source": "basemap",
+      "source-layer": "roads",
+      "maxzoom": 15,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#4e4a45",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          6,
+          0.25,
+          12,
+          2.1
+        ],
+        "line-opacity": 0.6
+      }
+    },
+    {
+      "id": "roads",
+      "type": "line",
+      "source": "basemap",
+      "source-layer": "roads",
+      "maxzoom": 15,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#fff8df",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          6,
+          0.15,
+          12,
+          1.35
+        ],
+        "line-opacity": 0.98
+      }
+    },
+    {
+      "id": "places",
+      "type": "symbol",
+      "source": "basemap",
+      "source-layer": "places",
+      "minzoom": 3,
+      "maxzoom": 15,
+      "layout": {
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          3,
+          10,
+          8,
+          12,
+          12,
+          14
+        ]
+      },
+      "paint": {
+        "text-color": "#2d3037",
+        "text-halo-color": "#faf9f6",
+        "text-halo-width": 1.1
+      }
+    },
+    {
+      "id": "ca-hi-roads-casing",
+      "type": "line",
+      "source": "ca_hi",
+      "source-layer": "transportation",
+      "minzoom": 10,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#3a3732",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          0.6,
+          13,
+          1.4,
+          15,
+          2.2,
+          17,
+          3.4
+        ],
+        "line-opacity": 0.72
+      }
+    },
+    {
+      "id": "ca-hi-roads",
+      "type": "line",
+      "source": "ca_hi",
+      "source-layer": "transportation",
+      "minzoom": 10,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#ffe6a6",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          0.35,
+          13,
+          0.9,
+          15,
+          1.5,
+          17,
+          2.5
+        ],
+        "line-opacity": 0.98
+      }
+    },
+    {
+      "id": "ca-hi-road-names",
+      "type": "symbol",
+      "source": "ca_hi",
+      "source-layer": "transportation_name",
+      "minzoom": 11,
+      "layout": {
+        "symbol-placement": "line",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ],
+          [
+            "get",
+            "ref"
+          ]
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          11,
+          9,
+          15,
+          11
+        ]
+      },
+      "paint": {
+        "text-color": "#1f2a35",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.3
+      }
+    },
+    {
+      "id": "ca-hi-airways",
+      "type": "line",
+      "source": "ca_hi",
+      "source-layer": "aeroway",
+      "minzoom": 9,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#4ca0b0",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          9,
+          0.7,
+          13,
+          1.4,
+          15,
+          2.2
+        ],
+        "line-opacity": 0.95
+      }
+    },
+    {
+      "id": "ca-hi-airfield-labels",
+      "type": "symbol",
+      "source": "ca_hi",
+      "source-layer": "aerodrome_label",
+      "minzoom": 9,
+      "layout": {
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ],
+          [
+            "get",
+            "icao"
+          ],
+          [
+            "get",
+            "iata"
+          ]
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          9,
+          10,
+          15,
+          13
+        ]
+      },
+      "paint": {
+        "text-color": "#0f5c68",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.4
+      }
+    },
+    {
+      "id": "ca-hi-buildings",
+      "type": "fill",
+      "source": "ca_hi",
+      "source-layer": "building",
+      "minzoom": 15,
+      "paint": {
+        "fill-color": "#d0cbc2",
+        "fill-opacity": 0.82
+      }
+    },
+    {
+      "id": "ca-hi-places",
+      "type": "symbol",
+      "source": "ca_hi",
+      "source-layer": "place",
+      "minzoom": 8,
+      "layout": {
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          8,
+          10,
+          11,
+          11,
+          17,
+          14
+        ]
+      },
+      "paint": {
+        "text-color": "#172029",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.4
+      }
+    }
+  ]
+}

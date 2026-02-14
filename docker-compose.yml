@@ -1,0 +1,30 @@
+services:
+  tileserver:
+    image: maptiler/tileserver-gl:latest
+    container_name: tile-server-gl
+    ports:
+      - "${TILESERVER_PORT:-8080}:8080"
+    volumes:
+      - ./data:/data:ro
+    command:
+      - --config
+      - /data/config.json
+      - --verbose
+      - --port
+      - "8080"
+    restart: unless-stopped
+
+  pmtiles:
+    image: protomaps/go-pmtiles:latest
+    container_name: tile-server-pmtiles
+    ports:
+      - "${PMTILES_PORT:-8081}:8080"
+    volumes:
+      - ./data/pmtiles:/data:ro
+    command:
+      - serve
+      - /data
+      - --port=8080
+      - --cors=*
+      - --public-url=http://localhost:${PMTILES_PORT:-8081}
+    restart: unless-stopped

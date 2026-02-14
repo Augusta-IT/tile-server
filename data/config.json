@@ -1,0 +1,42 @@
+{
+  "options": {
+    "paths": {
+      "root": "/data",
+      "styles": "styles",
+      "mbtiles": "mbtiles"
+    }
+  },
+  "data": {
+    "terrain_global_250m": {
+      "mbtiles": "terrain_global_250m.mbtiles"
+    },
+    "contours_global_250m": {
+      "mbtiles": "contours_global_250m.mbtiles"
+    },
+    "terrain_ca_uk_hi": {
+      "mbtiles": "terrain_ca_uk_hi.mbtiles"
+    },
+    "contours_ca_uk_hi": {
+      "mbtiles": "contours_ca_uk_hi.mbtiles"
+    },
+    "slope_ca_uk_hi": {
+      "mbtiles": "slope_ca_uk_hi.mbtiles"
+    },
+    "ca_hi": {
+      "mbtiles": "ca_hi.mbtiles"
+    }
+  },
+  "styles": {
+    "route-planner": {
+      "style": "route-planner/style.json",
+      "tilejson": {
+        "bounds": [
+          -180,
+          -85,
+          180,
+          85
+        ]
+      }
+    }
+  }
+}
