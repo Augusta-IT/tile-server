@@ -1,7 +1,7 @@
 {
   "version": 8,
   "name": "Route Planner",
-  "glyphs": "/fonts/{fontstack}/{range}.pbf",
+  "glyphs": "http://localhost:8080/fonts/{fontstack}/{range}.pbf",
   "sources": {
     "basemap": {
       "type": "vector",
@@ -11,34 +11,34 @@
     },
     "terrain_global": {
       "type": "raster",
-      "url": "/data/terrain_global_250m.json",
+      "url": "http://localhost:8080/data/terrain_global_250m.json",
       "tileSize": 256
     },
     "terrain_ca_uk_hi": {
       "type": "raster",
-      "url": "/data/terrain_ca_uk_hi.json",
+      "url": "http://localhost:8080/data/terrain_ca_uk_hi.json",
       "tileSize": 256
     },
     "slope_ca_uk_hi": {
       "type": "raster",
-      "url": "/data/slope_ca_uk_hi.json",
+      "url": "http://localhost:8080/data/slope_ca_uk_hi.json",
       "tileSize": 256
     },
     "contours_global": {
       "type": "vector",
-      "url": "/data/contours_global_250m.json",
+      "url": "http://localhost:8080/data/contours_global_250m.json",
       "minzoom": 6,
       "maxzoom": 15
     },
     "contours_ca_uk_hi": {
       "type": "vector",
-      "url": "/data/contours_ca_uk_hi.json",
+      "url": "http://localhost:8080/data/contours_ca_uk_hi.json",
       "minzoom": 6,
       "maxzoom": 15
     },
     "ca_hi": {
       "type": "vector",
-      "url": "/data/ca_hi.json",
+      "url": "http://localhost:8080/data/ca_hi.json",
       "minzoom": 0,
       "maxzoom": 15
     }
@@ -1030,7 +1030,7 @@
       "source": "contours_global",
       "source-layer": "contour",
       "minzoom": 7,
-      "maxzoom": 22,
+      "maxzoom": 11,
       "filter": [
         "all",
         [
@@ -1116,7 +1116,7 @@
       "source": "contours_global",
       "source-layer": "contour",
       "minzoom": 7,
-      "maxzoom": 22,
+      "maxzoom": 11,
       "filter": [
         "all",
         [
@@ -1201,7 +1201,7 @@
       "type": "line",
       "source": "contours_ca_uk_hi",
       "source-layer": "contour",
-      "minzoom": 8,
+      "minzoom": 13,
       "maxzoom": 22,
       "filter": [
         "all",
@@ -1287,7 +1287,7 @@
       "type": "line",
       "source": "contours_ca_uk_hi",
       "source-layer": "contour",
-      "minzoom": 8,
+      "minzoom": 11,
       "maxzoom": 22,
       "filter": [
         "all",
@@ -1373,7 +1373,7 @@
       "type": "line",
       "source": "contours_ca_uk_hi",
       "source-layer": "contour",
-      "minzoom": 9,
+      "minzoom": 11,
       "maxzoom": 22,
       "filter": [
         "all",
