@@ -344,7 +344,7 @@
             "class"
           ],
           "military",
-          "#8fbe63",
+          "#a8ba92",
           [
             "protected_area",
             "nature_reserve",
@@ -366,13 +366,13 @@
             "case",
             [
               "==",
-            [
-              "get",
-              "class"
+              [
+                "get",
+                "class"
+              ],
+              "military"
             ],
-            "military"
-          ],
-            0.16,
+            0.1,
             [
               "in",
               [
@@ -396,13 +396,13 @@
             "case",
             [
               "==",
-            [
-              "get",
-              "class"
+              [
+                "get",
+                "class"
+              ],
+              "military"
             ],
-            "military"
-          ],
-            0.22,
+            0.14,
             [
               "in",
               [
@@ -426,13 +426,13 @@
             "case",
             [
               "==",
-            [
-              "get",
-              "class"
+              [
+                "get",
+                "class"
+              ],
+              "military"
             ],
-            "military"
-          ],
-            0.26,
+            0.18,
             [
               "in",
               [
@@ -713,7 +713,7 @@
         "military"
       ],
       "paint": {
-        "line-color": "#3d6b22",
+        "line-color": "#5f7350",
         "line-width": [
           "interpolate",
           [
@@ -723,13 +723,13 @@
             "zoom"
           ],
           10,
-          1.2,
+          0.8,
           12,
-          1.9,
+          1.3,
           15,
-          2.8
+          2
         ],
-        "line-opacity": 0.9
+        "line-opacity": 0.55
       }
     },
     {
@@ -769,6 +769,15 @@
             ]
           ],
           "#7daecc",
+          [
+            "==",
+            [
+              "get",
+              "kind_detail"
+            ],
+            "lake"
+          ],
+          "#9eb2bf",
           "#6ea7cc"
         ],
         "fill-opacity": [
@@ -811,7 +820,16 @@
               ]
             ],
             0.03,
-            0.45
+            [
+              "==",
+              [
+                "get",
+                "kind_detail"
+              ],
+              "lake"
+            ],
+            0.12,
+            0.3
           ],
           11,
           [
@@ -845,7 +863,16 @@
               ]
             ],
             0.1,
-            0.62
+            [
+              "==",
+              [
+                "get",
+                "kind_detail"
+              ],
+              "lake"
+            ],
+            0.2,
+            0.45
           ],
           15,
           [
@@ -879,9 +906,122 @@
               ]
             ],
             0.2,
-            0.8
+            [
+              "==",
+              [
+                "get",
+                "kind_detail"
+              ],
+              "lake"
+            ],
+            0.35,
+            0.68
           ]
         ]
+      }
+    },
+    {
+      "id": "water-names",
+      "type": "symbol",
+      "source": "ca_hi",
+      "source-layer": "water_name",
+      "minzoom": 8,
+      "layout": {
+        "symbol-placement": "line",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          8,
+          9,
+          12,
+          11,
+          15,
+          13
+        ],
+        "symbol-spacing": 400
+      },
+      "paint": {
+        "text-color": "#446f8f",
+        "text-halo-color": "#f8fbff",
+        "text-halo-width": 1.3
+      }
+    },
+    {
+      "id": "water-lake-names-basemap",
+      "type": "symbol",
+      "source": "basemap",
+      "source-layer": "water",
+      "minzoom": 8,
+      "filter": [
+        "all",
+        [
+          "has",
+          "name"
+        ],
+        [
+          "==",
+          [
+            "get",
+            "kind_detail"
+          ],
+          "lake"
+        ]
+      ],
+      "layout": {
+        "symbol-placement": "point",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          8,
+          9,
+          12,
+          12,
+          15,
+          14
+        ]
+      },
+      "paint": {
+        "text-color": "#4b6f86",
+        "text-halo-color": "#f8fbff",
+        "text-halo-width": 1.5
       }
     },
     {
@@ -1054,99 +1194,6 @@
           4200,
           1
         ]
-      }
-    },
-    {
-      "id": "contour-global-label",
-      "type": "symbol",
-      "source": "contours_global",
-      "source-layer": "contour",
-      "minzoom": 12,
-      "maxzoom": 22,
-      "filter": [
-        "all",
-        [
-          "has",
-          "ele"
-        ],
-        [
-          "==",
-          [
-            "%",
-            [
-              "to-number",
-              [
-                "get",
-                "ele"
-              ]
-            ],
-            500
-          ],
-          0
-        ]
-      ],
-      "layout": {
-        "symbol-placement": "line",
-        "text-field": [
-          "concat",
-          [
-            "to-string",
-            [
-              "to-number",
-              [
-                "get",
-                "ele"
-              ]
-            ]
-          ],
-          " m"
-        ],
-        "text-font": [
-          "Noto Sans Regular"
-        ],
-        "text-size": [
-          "interpolate",
-          [
-            "linear"
-          ],
-          [
-            "zoom"
-          ],
-          9,
-          8.5,
-          13,
-          10.5
-        ],
-        "symbol-spacing": 420
-      },
-      "paint": {
-        "text-color": [
-          "interpolate",
-          [
-            "linear"
-          ],
-          [
-            "to-number",
-            [
-              "get",
-              "ele"
-            ]
-          ],
-          0,
-          "#5e7f97",
-          600,
-          "#5f8e49",
-          1200,
-          "#8d7a42",
-          2000,
-          "#834f33",
-          3000,
-          "#6a3231",
-          4200,
-          "#49202d"
-        ],
-        "text-halo-color": "#fffdf8",
-        "text-halo-width": 1.5
       }
     },
     {
@@ -1411,192 +1458,6 @@
       }
     },
     {
-      "id": "contour-ca-uk-hi-index-label",
-      "type": "symbol",
-      "source": "contours_ca_uk_hi",
-      "source-layer": "contour",
-      "minzoom": 12,
-      "maxzoom": 22,
-      "filter": [
-        "all",
-        [
-          "has",
-          "ele"
-        ],
-        [
-          "==",
-          [
-            "%",
-            [
-              "to-number",
-              [
-                "get",
-                "ele"
-              ]
-            ],
-            500
-          ],
-          0
-        ]
-      ],
-      "layout": {
-        "symbol-placement": "line",
-        "text-field": [
-          "concat",
-          [
-            "to-string",
-            [
-              "to-number",
-              [
-                "get",
-                "ele"
-              ]
-            ]
-          ],
-          " m"
-        ],
-        "text-font": [
-          "Noto Sans Regular"
-        ],
-        "text-size": [
-          "interpolate",
-          [
-            "linear"
-          ],
-          [
-            "zoom"
-          ],
-          10,
-          9.5,
-          15,
-          12
-        ],
-        "symbol-spacing": 260
-      },
-      "paint": {
-        "text-color": [
-          "interpolate",
-          [
-            "linear"
-          ],
-          [
-            "to-number",
-            [
-              "get",
-              "ele"
-            ]
-          ],
-          0,
-          "#5e7f97",
-          600,
-          "#5f8e49",
-          1200,
-          "#8d7a42",
-          2000,
-          "#834f33",
-          3000,
-          "#6a3231",
-          4200,
-          "#49202d"
-        ],
-        "text-halo-color": "#fffdf8",
-        "text-halo-width": 1.7
-      }
-    },
-    {
-      "id": "contour-ca-uk-hi-label",
-      "type": "symbol",
-      "source": "contours_ca_uk_hi",
-      "source-layer": "contour",
-      "minzoom": 12,
-      "maxzoom": 22,
-      "filter": [
-        "all",
-        [
-          "has",
-          "ele"
-        ],
-        [
-          "==",
-          [
-            "%",
-            [
-              "to-number",
-              [
-                "get",
-                "ele"
-              ]
-            ],
-            100
-          ],
-          0
-        ]
-      ],
-      "layout": {
-        "symbol-placement": "line",
-        "text-field": [
-          "concat",
-          [
-            "to-string",
-            [
-              "to-number",
-              [
-                "get",
-                "ele"
-              ]
-            ]
-          ],
-          " m"
-        ],
-        "text-font": [
-          "Noto Sans Regular"
-        ],
-        "text-size": [
-          "interpolate",
-          [
-            "linear"
-          ],
-          [
-            "zoom"
-          ],
-          12,
-          9.5,
-          15,
-          11.5
-        ],
-        "symbol-spacing": 280
-      },
-      "paint": {
-        "text-color": [
-          "interpolate",
-          [
-            "linear"
-          ],
-          [
-            "to-number",
-            [
-              "get",
-              "ele"
-            ]
-          ],
-          0,
-          "#5e7f97",
-          600,
-          "#5f8e49",
-          1200,
-          "#8d7a42",
-          2000,
-          "#834f33",
-          3000,
-          "#6a3231",
-          4200,
-          "#49202d"
-        ],
-        "text-halo-color": "#fffdf8",
-        "text-halo-width": 1.4
-      }
-    },
-    {
       "id": "roads-casing",
       "type": "line",
       "source": "basemap",
@@ -1657,8 +1518,8 @@
       "type": "symbol",
       "source": "basemap",
       "source-layer": "places",
-      "minzoom": 2,
-      "maxzoom": 15,
+      "minzoom": 0,
+      "maxzoom": 9,
       "layout": {
         "text-field": [
           "coalesce",
@@ -1682,13 +1543,17 @@
           [
             "zoom"
           ],
+          0,
+          9,
           3,
           10,
           8,
           12,
           12,
           14
-        ]
+        ],
+        "text-allow-overlap": true,
+        "text-ignore-placement": true
       },
       "paint": {
         "text-color": "#2d3037",
@@ -2063,11 +1928,82 @@
       }
     },
     {
-      "id": "ca-hi-places",
+      "id": "ca-hi-mountain-peaks",
       "type": "symbol",
       "source": "ca_hi",
-      "source-layer": "place",
-      "minzoom": 6,
+      "source-layer": "mountain_peak",
+      "minzoom": 9,
+      "filter": [
+        "all",
+        [
+          "has",
+          "name"
+        ],
+        [
+          "has",
+          "ele"
+        ]
+      ],
+      "layout": {
+        "text-field": [
+          "concat",
+          [
+            "coalesce",
+            [
+              "get",
+              "name:en"
+            ],
+            [
+              "get",
+              "name"
+            ]
+          ],
+          " ",
+          [
+            "to-string",
+            [
+              "to-number",
+              [
+                "get",
+                "ele"
+              ]
+            ]
+          ],
+          "m"
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          9,
+          9,
+          13,
+          11
+        ]
+      },
+      "paint": {
+        "text-color": "#4f3b2f",
+        "text-halo-color": "#fffcf7",
+        "text-halo-width": 1.4
+      }
+    },
+    {
+      "id": "ca-hi-park-names",
+      "type": "symbol",
+      "source": "ca_hi",
+      "source-layer": "park",
+      "minzoom": 10,
+      "filter": [
+        "has",
+        "name"
+      ],
       "layout": {
         "text-field": [
           "coalesce",
@@ -2091,13 +2027,150 @@
           [
             "zoom"
           ],
+          10,
+          9,
+          14,
+          11.5
+        ]
+      },
+      "paint": {
+        "text-color": "#4f6f45",
+        "text-halo-color": "#f8fff2",
+        "text-halo-width": 1.3
+      }
+    },
+    {
+      "id": "ca-hi-waterway-names",
+      "type": "symbol",
+      "source": "ca_hi",
+      "source-layer": "waterway",
+      "minzoom": 10,
+      "filter": [
+        "has",
+        "name"
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          8.5,
+          14,
+          10.5
+        ],
+        "symbol-spacing": 320
+      },
+      "paint": {
+        "text-color": "#507c9a",
+        "text-halo-color": "#f5fbff",
+        "text-halo-width": 1.3
+      }
+    },
+    {
+      "id": "ca-hi-poi-names",
+      "type": "symbol",
+      "source": "ca_hi",
+      "source-layer": "poi",
+      "minzoom": 12,
+      "filter": [
+        "has",
+        "name"
+      ],
+      "layout": {
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          12,
+          8.2,
+          16,
+          10
+        ]
+      },
+      "paint": {
+        "text-color": "#404752",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.1
+      }
+    },
+    {
+      "id": "ca-hi-places",
+      "type": "symbol",
+      "source": "ca_hi",
+      "source-layer": "place",
+      "minzoom": 9,
+      "layout": {
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:en"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          4,
+          9,
           8,
           10,
           11,
           11,
           17,
           14
-        ]
+        ],
+        "text-allow-overlap": true,
+        "text-ignore-placement": true
       },
       "paint": {
         "text-color": "#172029",
