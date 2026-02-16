@@ -26,5 +26,5 @@ services:
       - /data
       - --port=8080
       - --cors=*
-      - --public-url=http://localhost:${PMTILES_PORT:-8081}
+      - --public-url=${PMTILES_PUBLIC_URL:-http://localhost:8081}
     restart: unless-stopped

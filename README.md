@@ -79,6 +79,7 @@ Modes:
 
 - MBTiles server + map UI: `http://localhost:${TILESERVER_PORT:-8080}`
 - PMTiles API: `http://localhost:${PMTILES_PORT:-8081}`
+- PMTiles TileJSON public URL metadata: `${PMTILES_PUBLIC_URL:-http://localhost:8081}`
 
 ## Build MBTiles
 
@@ -87,6 +88,11 @@ Generate terrain MBTiles layers used by the route-planner style:
 ```bash
 ./scripts/build_terrain_mbtiles.sh
 ```
+
+The terrain build now:
+- Forces global DEM reprojection to Web Mercator before hillshade/contour generation.
+- Writes contour MBTiles with explicit `EPSG:4326 -> EPSG:3857` transform.
+- Adds lower-zoom overviews for terrain/slope MBTiles to improve low/mid-zoom rendering.
 
 Monitor progress:
 
@@ -119,12 +125,16 @@ This produces:
 - `ca_hi.mbtiles` is expected to use OpenMapTiles-style layers (`transportation`, `building`, `place`).
 
 For remote clients (Overseer on another machine):
-- `:8080` paths in style are host-agnostic (relative URLs).
+- `:8080` style/data/font paths are host-agnostic (relative URLs).
 - Set PMTiles basemap host with:
 
 ```bash
 ./scripts/set_style_remote_host.sh <tile_host_or_ip>
 ```
+
+This updates both:
+- `sources.basemap.url` in `data/styles/route-planner/style.json`
+- `PMTILES_PUBLIC_URL` in `.env`
 
 Then restart:
 

@@ -31,6 +31,11 @@ OUT_SLOPE_FOCUS="$MBTILES_DIR/slope_ca_uk_hi.mbtiles"
 
 GLOBAL_CONTOUR_INTERVAL_M="${GLOBAL_CONTOUR_INTERVAL_M:-200}"
 FOCUS_CONTOUR_INTERVAL_M="${FOCUS_CONTOUR_INTERVAL_M:-50}"
+
+GLOBAL_CONTOUR_MIN_ZOOM="${GLOBAL_CONTOUR_MIN_ZOOM:-0}"
+GLOBAL_CONTOUR_MAX_ZOOM="${GLOBAL_CONTOUR_MAX_ZOOM:-8}"
+FOCUS_CONTOUR_MIN_ZOOM="${FOCUS_CONTOUR_MIN_ZOOM:-4}"
+FOCUS_CONTOUR_MAX_ZOOM="${FOCUS_CONTOUR_MAX_ZOOM:-13}"
 FORCE="${FORCE:-0}"
 
 mkdir -p "$MBTILES_DIR" "$TMP_DIR" "$LOG_DIR"
@@ -48,7 +53,7 @@ need_cmd() {
   fi
 }
 
-for c in gdalbuildvrt gdalwarp gdaldem gdal_contour gdal_translate ogr2ogr; do
+for c in gdalbuildvrt gdalwarp gdaladdo gdaldem gdal_contour gdal_translate ogr2ogr; do
   need_cmd "$c"
 done
 
@@ -141,15 +146,30 @@ build_global_hillshade_mbtiles() {
   fi
   rm -f "$OUT_TERRAIN_GLOBAL"
 
+  local global_dem_3857="$TMP_DIR/global_dem_3857.tif"
   local hs_tif="$TMP_DIR/global_hillshade.tif"
+
+  # ETOPO1 can occasionally be interpreted without CRS by downstream tools,
+  # so force EPSG:4326 source and explicitly warp to Web Mercator first.
+  log "Warping global DEM to EPSG:3857..."
+  gdalwarp -overwrite \
+    -s_srs EPSG:4326 \
+    -t_srs EPSG:3857 \
+    -r bilinear \
+    -multi -wo NUM_THREADS=ALL_CPUS \
+    "$GLOBAL_DEM" "$global_dem_3857" >>"$LOG_FILE" 2>&1
+
   log "Building global hillshade raster..."
-  gdaldem hillshade "$GLOBAL_DEM" "$hs_tif" -z 1.0 -s 111120 -compute_edges -multidirectional >>"$LOG_FILE" 2>&1
+  gdaldem hillshade "$global_dem_3857" "$hs_tif" -z 1.0 -compute_edges -multidirectional >>"$LOG_FILE" 2>&1
 
   log "Converting global hillshade to MBTiles..."
   gdal_translate -of MBTILES "$hs_tif" "$OUT_TERRAIN_GLOBAL" \
     -co TILE_FORMAT=PNG \
-    -co ZOOM_LEVEL_STRATEGY=AUTO \
+    -co ZOOM_LEVEL_STRATEGY=LOWER \
     >>"$LOG_FILE" 2>&1
+
+  # Build lower zoom overviews for efficient low-zoom rendering.
+  gdaladdo -r average "$OUT_TERRAIN_GLOBAL" 2 4 8 16 32 64 128 >>"$LOG_FILE" 2>&1 || true
 }
 
 build_global_contours_mbtiles() {
@@ -167,9 +187,11 @@ build_global_contours_mbtiles() {
 
   log "Converting global contours to MBTiles (layer: contour)..."
   ogr2ogr -f MBTILES "$OUT_CONTOURS_GLOBAL" "$contour_gpkg" \
+    -s_srs EPSG:4326 \
+    -t_srs EPSG:3857 \
     -nln contour \
-    -dsco MAXZOOM=8 \
-    -dsco MINZOOM=0 \
+    -dsco MAXZOOM="$GLOBAL_CONTOUR_MAX_ZOOM" \
+    -dsco MINZOOM="$GLOBAL_CONTOUR_MIN_ZOOM" \
     >>"$LOG_FILE" 2>&1
 }
 
@@ -204,6 +226,9 @@ build_focus_hillshade_mbtiles() {
     -co TILE_FORMAT=PNG \
     -co ZOOM_LEVEL_STRATEGY=AUTO \
     >>"$LOG_FILE" 2>&1
+
+  # Build lower zoom overviews to avoid over-fetching at mid zooms.
+  gdaladdo -r average "$OUT_TERRAIN_FOCUS" 2 4 8 16 >>"$LOG_FILE" 2>&1 || true
 }
 
 build_focus_contours_mbtiles() {
@@ -234,9 +259,11 @@ build_focus_contours_mbtiles() {
 
   log "Converting CA+UK contours to MBTiles (layer: contour)..."
   ogr2ogr -f MBTILES "$OUT_CONTOURS_FOCUS" "$contour_gpkg" \
+    -s_srs EPSG:4326 \
+    -t_srs EPSG:3857 \
     -nln contour \
-    -dsco MAXZOOM=13 \
-    -dsco MINZOOM=4 \
+    -dsco MAXZOOM="$FOCUS_CONTOUR_MAX_ZOOM" \
+    -dsco MINZOOM="$FOCUS_CONTOUR_MIN_ZOOM" \
     >>"$LOG_FILE" 2>&1
 }
 
@@ -290,6 +317,9 @@ EOF
     -co TILE_FORMAT=PNG \
     -co ZOOM_LEVEL_STRATEGY=AUTO \
     >>"$LOG_FILE" 2>&1
+
+  # Build lower zoom overviews to avoid over-fetching at mid zooms.
+  gdaladdo -r average "$OUT_SLOPE_FOCUS" 2 4 8 16 >>"$LOG_FILE" 2>&1 || true
 }
 
 log "Starting terrain MBTiles build."
